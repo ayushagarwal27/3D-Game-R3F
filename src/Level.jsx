@@ -106,12 +106,55 @@ function BlockLimbo({ position = [0, 0, 0] }) {
   );
 }
 
+function BlockAxe({ position = [0, 0, 0] }) {
+  const obstacleRef = useRef();
+  const [timeOffSet, _] = useState(() => Math.random() * Math.PI * 2);
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    const x = Math.sin(time + timeOffSet) * 1.25;
+    obstacleRef.current.setNextKinematicTranslation({
+      x: position[0] + x,
+      y: position[1] + 0.75,
+      z: position[2],
+    });
+  });
+
+  return (
+    <group position={position}>
+      <mesh
+        geometry={boxGeometry}
+        material={floor2Material}
+        position={[0, -0.1, 0]}
+        scale={[4, 0.2, 4]}
+        receiveShadow
+      />
+      <RigidBody
+        ref={obstacleRef}
+        type="kinematicPosition"
+        position={[0, 0.3, 0]}
+        restitution={0.2}
+        friction={0}
+      >
+        <mesh
+          geometry={boxGeometry}
+          material={obstacleMaterial}
+          scale={[1.5, 1.5, 0.3]}
+          castShadow
+          receiveShadow
+        />
+      </RigidBody>
+    </group>
+  );
+}
+
 const Level = () => {
   return (
     <>
-      <BlockStart position={[0, 0, 8]} />
-      <BlockSpinner position={[0, 0, 4]} />
-      <BlockLimbo position={[0, 0, 0]} />
+      <BlockStart position={[0, 0, 12]} />
+      <BlockSpinner position={[0, 0, 8]} />
+      <BlockLimbo position={[0, 0, 4]} />
+      <BlockAxe position={[0, 0, 0]} />
     </>
   );
 };
