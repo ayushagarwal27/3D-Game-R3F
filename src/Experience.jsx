@@ -8,7 +8,7 @@ export default function Experience() {
   return (
     <>
       <OrbitControls makeDefault />
-      <Physics debug={true}>
+      <Physics debug={false}>
         <Lights />
         <Level />
         <Player/>
