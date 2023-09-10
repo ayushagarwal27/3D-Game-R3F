@@ -10,7 +10,9 @@ const Player = (state, delta) => {
   const bodyRef = useRef(null);
   const rapierWorld = world;
 
-  const [smoothedCameraPosition, _] = useState(() => new THREE.Vector3());
+  const [smoothedCameraPosition, _] = useState(
+    () => new THREE.Vector3(10, 10, 10)
+  );
   const [smoothedCameraTarget, _1] = useState(() => new THREE.Vector3());
 
   const jump = () => {
