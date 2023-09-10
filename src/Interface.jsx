@@ -1,19 +1,22 @@
 import { useKeyboardControls } from "@react-three/drei";
+import useGame from "./stores/useGame";
 import React from "react";
 
 const Interface = () => {
+  const restart = useGame((state) => state.restart);
+
   const forward = useKeyboardControls((state) => state.forward);
   const backward = useKeyboardControls((state) => state.backward);
   const leftward = useKeyboardControls((state) => state.leftward);
   const rightward = useKeyboardControls((state) => state.rightward);
   const jump = useKeyboardControls((state) => state.jump);
 
-  console.log(forward);
-
   return (
     <div className="interface">
       <div className="time">0.00</div>
-      <div className="restart">Restart</div>
+      <div className="restart" onClick={restart}>
+        Restart
+      </div>
 
       <div className="controls">
         <div className="raw">

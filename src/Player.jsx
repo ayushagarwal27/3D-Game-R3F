@@ -3,6 +3,7 @@ import { useKeyboardControls, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody, useRapier } from "@react-three/rapier";
 import * as THREE from "three";
+import useGame from "./stores/useGame";
 
 const Player = () => {
   const [subscribeKeys, getKeys] = useKeyboardControls();
@@ -14,6 +15,11 @@ const Player = () => {
     () => new THREE.Vector3(10, 10, 10)
   );
   const [smoothedCameraTarget, _1] = useState(() => new THREE.Vector3());
+
+  const start = useGame((state) => state.start);
+  const end = useGame((state) => state.end);
+  const restart = useGame((state) => state.restart);
+  const blocksCount = useGame((state) => state.blocksCount);
 
   const jump = () => {
     const origin = bodyRef.current.translation();
@@ -27,7 +33,22 @@ const Player = () => {
     }
   };
 
+  const reset = () => {
+    bodyRef.current.setTranslation({ x: 0, y: 1, z: 0 });
+    bodyRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+    bodyRef.current.setAngVel({ x: 0, y: 0, z: 0 });
+  };
+
   useEffect(() => {
+    const unsbscribeReset = useGame.subscribe(
+      (state) => state.phase,
+      (value) => {
+        if (value === "ready") {
+          reset();
+        }
+      }
+    );
+
     const unsbscribeJump = subscribeKeys(
       (state) => state.jump,
       (value) => {
@@ -37,8 +58,14 @@ const Player = () => {
       }
     );
 
+    const unsubscribeAny = subscribeKeys(() => {
+      start();
+    });
+
     return () => {
+      unsbscribeReset();
       unsbscribeJump();
+      unsubscribeAny();
     };
   }, []);
 
@@ -88,6 +115,13 @@ const Player = () => {
 
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedCameraTarget);
+
+    if (bodyPosition.z < -(blocksCount * 4 + 2)) {
+      end();
+    }
+    if (bodyPosition.y < -4) {
+      restart();
+    }
   });
 
   return (
