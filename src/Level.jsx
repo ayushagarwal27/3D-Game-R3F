@@ -1,4 +1,4 @@
-import { useGLTF } from "@react-three/drei";
+import { Float, Text, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import React, { useMemo, useRef, useState } from "react";
@@ -14,6 +14,20 @@ const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategrey" });
 function BlockStart({ position = [0, 0, 0] }) {
   return (
     <group position={position}>
+      <Float floatIntensity={0.25} rotationIntensity={0.25}>
+        <Text
+          scale={0.4}
+          font="./bebas-neue-v9-latin-regular.wolf"
+          maxWidth={0.25}
+          lineHeight={0.75}
+          textAlign="right"
+          position={[0.75, 0.65, 0]}
+          rotation-y={-0.25}
+        >
+          Marble Race
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
+      </Float>
       <mesh
         geometry={boxGeometry}
         material={floor1Material}
@@ -157,6 +171,19 @@ function BlockEnd({ position = [0, 0, 0] }) {
 
   return (
     <group position={position}>
+      <Text
+        scale={1}
+        font="./bebas-neue-v9-latin-regular.wolf"
+        maxWidth={0.5}
+        lineHeight={0.75}
+        textAlign="right"
+        position={[0.75, 2.25, 2]}
+        rotation-y={-0.25}
+      >
+        Finish
+        <meshBasicMaterial toneMapped={false} />
+      </Text>
+
       <mesh
         geometry={boxGeometry}
         material={floor1Material}
@@ -211,7 +238,11 @@ function Bounds({ length = 1 }) {
   );
 }
 
-const Level = ({ count = 5, types = [BlockSpinner, BlockAxe, BlockLimbo], seed = 0 }) => {
+const Level = ({
+  count = 5,
+  types = [BlockSpinner, BlockAxe, BlockLimbo],
+  seed = 0,
+}) => {
   const blocks = useMemo(() => {
     const blocks = [];
 
